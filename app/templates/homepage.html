@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{{ title }}</h1>
+{% endblock %}
+
+{% block content %}
+<h2>Upload a replay</h2>
+
+<form class="col s12" method=post enctype=multipart/form-data action=/api/v1/upload>
+  <div class="row">
+    <div class="input-field col s6">
+      <select name="radiant_team" id="radiant_team">
+        <option value="" disabled selected>Choose a team name</option>
+        <option value="BOMBO">BOMBO</option>
+        <option value="Namaste">Namaste</option>
+        <option value="Please Don't Cry Arre">Please Don't Cry Arre</option>
+        <option value="Four Protect Andy Please">Four Protect Andy Please</option>
+        <option value="The Pizza Hut">The Pizza Hut</option>
+        <option value="Slark Ascending">Slark Ascending</option>
+        <option value="The Cambridgeshire and Pomezia etc. etc.">The Cambridgeshire and Pomezia etc. etc</option>
+      </select>
+      <label for="radiant_team">Radiant Team Name</label>
+    </div>
+    <div class="input-field col s6">
+      <select name="dire_team" id="dire_team">
+        <option value="" disabled selected>Choose a team name</option>
+        <option value="BOMBO">BOMBO</option>
+        <option value="Namaste">Namaste</option>
+        <option value="Please Don't Cry Arre">Please Don't Cry Arre</option>
+        <option value="Four Protect Andy Please">Four Protect Andy Please</option>
+        <option value="The Pizza Hut">The Pizza Hut</option>
+        <option value="Slark Ascending">Slark Ascending</option>
+        <option value="The Cambridgeshire and Pomezia etc. etc.">The Cambridgeshire and Pomezia etc. etc</option>
+      </select>
+      <label for="dire_team">Dire Team Name</label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="file-field input-field col s12">
+        <div class="btn blue">
+          <span>Replay File</span>
+          <input type="file" name="file">
+        </div>
+        <div class="file-path-wrapper">
+          <input class="file-path validate" type="text">
+        </div>
+      </div>
+  </div>
+  <div class="row">
+    <div class="col s12 center-align">
+        <button class="btn waves-effect waves-light blue" type="submit" name="action">Upload
+          <i class="material-icons right">send</i>
+        </button>
+    </div>
+  </div>
+</form>
+
+<h2>API Use</h2>
+
+<h3>Upload a replay</h3>
+Make a POST request to <code>/api/v1/upload</code>. This will start the parsing task.
+<br>
+Returns: <br>
+<pre>
+<code>
+  HTTP Status Code: 201
+  {
+    "id": "1234-5678-1234",
+    "status": "Accepted"
+  }
+</code>
+</pre>
+
+Any other information about the replay can also be passed to the API as form-encoded data as part of the POST request (see example below).<br>
+This information is stored with the replay and returned at the <code>/api/v1/status</code> endpoint.<br>
+It allows one client to upload a replay and information about the replay (eg. team names), then a second client to retrieve both at a later time.<br>
+
+<h3>Download a parsed replay</h3>
+Make a GET request to <code>/api/v1/status/your-replay-id</code>. There are two possible responses.<br>
+
+If the replay is still parsing:<br>
+<pre>
+<code>
+  HTTP Status Code: 201
+  {
+    "id": "your-replay-id",
+    "status": "Running"
+  }
+</code>
+</pre>
+
+Otherwise if the replay has finished, the response contents will be:
+<pre>
+  <code>
+    HTTP Status Code: 200
+    {
+      "id": "your-replay-id",
+      "status": "Completed",
+      "location": "/api/v1/download/your-replay-id"
+    }
+  </code>
+</pre>
+Making a GET request to the location URL will download the parsed JSON file as bytes.<br>
+Replays tend to take between 30 and 90 seconds to finish parsing and save. If your task takes much longer than that, it's likely something's gone wrong and you should probably try again.<br>
+
+If any additional information was sent to the API as part of the replay upload POST, this will also be returned in the status body:<br>
+<pre>
+  <code>
+    {
+      "id": "your-replay-id",
+      "status": "Completed",
+      "location": "/api/v1/download/your-replay-id",
+      "radiant_team": "Radiant Team Name",
+      "dire_team": "Dire Team Name"
+    }
+  </code>
+</pre>
+
+<h4>Upload and download example</h4>
+<pre>
+<code>
+  import requests
+  import sys
+  
+  from time import sleep
+  
+  if __name__ == "__main__":
+      """
+      Run with
+      python upload_example.py /path/to/replay.dem
+      """
+      replay_file = sys.argv[1]
+  
+      response = requests.post(
+          "https://dota2stats.io/api/v1/upload",
+          files = {
+              "file": open(replay_file, "rb")
+          },
+          # Store any other data along with the replay by
+          # sending it as form-encoded data
+          data = {
+              "radiant_team": "The Radiant Team Name",
+              "dire_team": "The Dire Team Name"
+          }
+      )
+      request_id = response.json()["id"]
+      print(f"Request ID: {request_id}")
+  
+      wait = 2
+      sleep(wait)
+      while response.status_code == 201:
+          response = requests.get("https://dota2stats.io/api/v1/status/" + request_id)
+          wait = min(wait * 2, 60)
+          print(f"Parsing not finished. Trying again in {wait} seconds")
+          sleep(wait)
+  
+      print(response.json())
+      download_url = response.json()["location"]
+          
+      with open("output.json", "wb") as o:
+          o.write(requests.get("https://dota2stats.io/" + download_url).content)
+</code>
+</pre>
+
+<h3>Listing all parsed replays</h3>
+Make a GET request to <code>/api/v1/all-completed</code>. Returns:<br>
+<pre>
+  <code>
+    HTTP Status Code: 200
+    {
+      "ids": ["68fe1458-5d96-446b-b67e-34b1f238ba0d","93d920d2-1b3b-4c9d-bc18-9e9dc1e079cc"]
+    }
+  </code>
+</pre> 
+The parsed replay for each of these IDs can be downloaded using the <code>/api/v1/status/your-replay-id</code> endpoint.
+{% endblock %}
+
+{% block footer %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('select');
+    var instances = M.FormSelect.init(elems);
+  });
+</script>
+{% endblock %}

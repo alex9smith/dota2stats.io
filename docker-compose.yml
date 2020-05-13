@@ -1,0 +1,34 @@
+version: "3"
+services:
+  app:
+    build: ./app
+    image: dota2stats-app:latest
+    environment:
+      LEAGUE_NAME: "IDL S13"
+    ports:
+      - "5000:5000"
+    networks:
+      - dota2stats
+    volumes:
+      - ./data/replays:/app/replays
+
+  parser:
+    image: alex9smith/opendota_parser:dota2stats.io
+    networks:
+      - dota2stats
+
+  redis:
+    image: redis:5-alpine
+    networks:
+      - dota2stats
+
+  celery-worker:
+    build: ./celery-worker
+    image: dota2stats-worker:latest
+    networks:
+      - dota2stats
+    volumes:
+      - ./data/replays:/app/replays
+
+networks:
+  dota2stats:
