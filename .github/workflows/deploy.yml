@@ -18,6 +18,7 @@ jobs:
         username: ${{ secrets.REMOTE_USERNAME }}
         key: ${{ secrets.REMOTE_SSH_KEY }}
         passphrase: ${{ secrets.REMOTE_PASSWORD }}
+        password: ${{ secrets.REMOTE_PASSWORD }}
         script: |
           cd dota2stats.io
           git checkout master
