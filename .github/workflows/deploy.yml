@@ -17,4 +17,5 @@ jobs:
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USERNAME }}
         privateKey: ${{ secrets.REMOTE_SSH_KEY }}
+        password: ${{ secrets.REMOTE_PASSWORD }}
         command: cd dota2stats.io && git checkout master && git pull && docker-compose up --build -d
