@@ -10,14 +10,16 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    steps:
-    - name: Deploy over SSH
-      uses: actions/checkout@v2
-      env:
+    env:
         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
         REMOTE_USERNAME: ${{ secrets.REMOTE_USERNAME }}
         REMOTE_SSH_KEY: ${{ secrets.REMOTE_SSH_KEY }}
         REMOTE_PASSWORD: ${{ secrets.REMOTE_PASSWORD }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Deploy over SSH
       run: |
         mkdir ~/.ssh
         echo "$REMOTE_SSH_KEY" > ~/.ssh/gh_actions_key
