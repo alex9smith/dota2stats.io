@@ -9,16 +9,21 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    env:
+        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+        REMOTE_USER: ${{ secrets.REMOTE_USER }}
+        REMOTE_SSH_KEY: ${{ secrets.REMOTE_SSH_KEY }}
+        REMOTE_PASSWORD: ${{ secrets.REMOTE_PASSWORD }}
     steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Write SSH key
+      run: |
+        mkdir ~/.ssh
+        echo "$REMOTE_SSH_KEY" > $HOME/.ssh/gh_actions_key
+        chmod 600 $HOME/.ssh/gh_actions_key
+
     - name: Deploy over SSH
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.REMOTE_HOST }}
-        username: ${{ secrets.REMOTE_USERNAME }}
-        key: ${{ secrets.REMOTE_SSH_KEY }}
-        passphrase: ${{ secrets.REMOTE_PASSWORD }}
-        script: |
-          cd dota2stats.io
-          git checkout master
-          git pull
-          docker-compose up --build -d
+      run: |
+        ssh -i $HOME/.ssh/gh_actions_key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$REMOTE_USER"@"$REMOTE_HOST" "cd dota2stats.io && git checkout master && git pull && docker-compose up --build -d"
