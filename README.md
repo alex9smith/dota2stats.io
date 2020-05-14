@@ -1,4 +1,6 @@
 # dota2stats.io
+![](https://github.com/alex9smith/dota2stats.io/workflows/Build%20App%20&%20Worker%20Images/badge.svg)      ![](https://github.com/alex9smith/dota2stats.io/workflows/Deploy%20Site/badge.svg)
+
 The stack behind [dota2stats.io](https://dota2stats.io).
 
 Wraps OpenDota's [replay parser](https://github.com/odota/parser/) to provide a hosted API and web interface for parsing Dota 2 replay files into JSON objects.
