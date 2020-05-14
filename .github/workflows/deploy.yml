@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-        REMOTE_USERNAME: ${{ secrets.REMOTE_USER }}
+        REMOTE_USER: ${{ secrets.REMOTE_USER }}
         REMOTE_SSH_KEY: ${{ secrets.REMOTE_SSH_KEY }}
         REMOTE_PASSWORD: ${{ secrets.REMOTE_PASSWORD }}
     steps:
@@ -33,5 +33,7 @@ jobs:
     - name: Deploy over SSH
       run: |
         echo starting ssh
-        echo ssh -i $HOME/.ssh/gh_actions_key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$REMOTE_USERNAME"@"$REMOTE_HOST" "cd dota2stats.io && git checkout master && git pull && docker-compose up --build -d"
-        ssh -i $HOME/.ssh/gh_actions_key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$REMOTE_USERNAME"@"$REMOTE_HOST" "cd dota2stats.io && git checkout master && git pull && docker-compose up --build -d"
+        echo $REMOTE_USER
+        echo $REMOTE_HOST
+        echo ssh -i $HOME/.ssh/gh_actions_key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$REMOTE_USER"@"$REMOTE_HOST" "cd dota2stats.io && git checkout master && git pull && docker-compose up --build -d"
+        ssh -i $HOME/.ssh/gh_actions_key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$REMOTE_USER"@"$REMOTE_HOST" "cd dota2stats.io && git checkout master && git pull && docker-compose up --build -d"
