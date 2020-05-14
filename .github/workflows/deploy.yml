@@ -33,4 +33,4 @@ jobs:
     - name: Deploy over SSH
       run: |
         echo starting ssh
-        ssh -i $HOME/.ssh/gh_actions_key "$REMOTE_USERNAME"@"$REMOTE_HOST" "cd dota2stats.io && git checkout master && git pull && docker-compose up --build -d"
+        ssh -i $HOME/.ssh/gh_actions_key -x "-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" "$REMOTE_USERNAME"@"$REMOTE_HOST" "cd dota2stats.io && git checkout master && git pull && docker-compose up --build -d"
