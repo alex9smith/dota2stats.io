@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-        REMOTE_USERNAME: ${{ secrets.REMOTE_USERNAME }}
+        REMOTE_USERNAME: ${{ secrets.REMOTE_USER }}
         REMOTE_SSH_KEY: ${{ secrets.REMOTE_SSH_KEY }}
         REMOTE_PASSWORD: ${{ secrets.REMOTE_PASSWORD }}
     steps:
