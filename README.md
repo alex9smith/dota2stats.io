@@ -28,3 +28,7 @@ The whole app is launched via `docker-compose`, and the front-end is accessible 
 docker-compose build
 docker-compose up
 ```
+
+CD is managed through two workflows using Github Actions.
+When a PR is opened, the first workflow (`build_images.yml`) tries to build the Docker images in `app` and `celery-worker`.
+The second workflow (`deploy.yml`) runs when a commit is made to `master` and deploys the new `master` branch to the hosting server.
