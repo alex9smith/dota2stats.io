@@ -1,0 +1,19 @@
+name: Build App & Worker Images
+
+on:
+  push:
+    branches: 
+      - master
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build the app image
+      run: docker build app
+      
+    - name: Build the worker image
+      run: docker build celery-worker
