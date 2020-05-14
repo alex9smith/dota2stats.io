@@ -23,5 +23,6 @@ jobs:
       run: |
         mkdir ~/.ssh
         echo "$REMOTE_SSH_KEY" > ~/.ssh/gh_actions_key
+        ls ~/.ssh
         chmod 600 ~/.ssh/gh_actions_key
         ssh -i ~/.ssh/gh_action_key "$REMOTE_USERNAME"@"$REMOTE_HOST" "cd dota2stats.io && git checkout master && git pull && docker-compose up --build -d"
