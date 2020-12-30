@@ -44,3 +44,10 @@ celerybeat.pid
 
 # Mac stuff
 *.DS_Store
+
+# Python venv
+venv
+venv/*
+
+# PyCharm
+.idea

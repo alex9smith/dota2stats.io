@@ -5,10 +5,28 @@ The stack behind [dota2stats.io](https://dota2stats.io).
 
 Wraps OpenDota's [replay parser](https://github.com/odota/parser/) to provide a hosted API and web interface for parsing Dota 2 replay files into JSON objects.
 
-## Usage
+## Using the service
 Anyone can upload a replay file via the form on the homepage. This kicks off the replay parser and adds data from the match to the database. Alternatively, call the HTTP API from any other program. 
 
 See [the homepage](https://dota2stats.io) for documentation on the API.
+
+### Parsing the results
+The parsed replay is a text file, where each line is an event in the match stored as JSON.
+A helper class `ReplaySummariser` is provided in `scripts/helpers/parser.py` which turns this output
+into something useful.
+
+#### Fantasy points
+Fantasy points have been broken in the Dota 2 client for a while, but they can be calculated by the `ReplaySummariser`.
+See `scripts/fantasy_points.py` for an example.
+
+To install dependencies and run the script,
+
+1. Make sure you have Python >= 3.8 installed and in your path
+2. Clone this repository
+3. From the repository root run `python -m venv venv` to create a new virtual environment
+4. Run `source venv/bin/activate` to activate the virtual environment
+5. Run `pip install -r requirements.txt` to install dependencies
+6. Run the script with `python scripts/fantasy_points.py /path/to/replay/file.dem`
 
 ## Architecture
 dota2stats.io is made up of 4 components:
