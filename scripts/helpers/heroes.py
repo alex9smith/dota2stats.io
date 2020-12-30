@@ -4210,6 +4210,24 @@ heroes = {
     "turn_rate": 0.8,
     "cm_enabled": True,
     "legs": 2
+  },
+  "npc_dota_hero_hoodwink": {
+    "id":123,
+    "name":"npc_dota_hero_hoodwink",
+    "localized_name":"Hoodwink",
+    "primary_attr":"agi",
+    "attack_type":"Ranged",
+    "roles":["Nuker","Escape","Disabler"],
+    "legs":2
+  },
+  "npc_dota_hero_void_spirit": {
+    "id":126,
+    "name":"npc_dota_hero_void_spirit",
+    "localized_name":"Void Spirit",
+    "primary_attr":"int",
+    "attack_type":"Melee",
+    "roles":["Carry","Escape","Nuker","Disabler"],
+    "legs":2
   }
 }
 
