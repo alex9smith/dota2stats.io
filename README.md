@@ -24,7 +24,7 @@ To install dependencies and run the script,
 1. Make sure you have Python >= 3.8 installed and in your path
 2. Clone this repository
 3. From the repository root run `python -m venv venv` to create a new virtual environment
-4. Run `source venv/bin/activate` to activate the virtual environment
+4. Run `source venv/bin/activate` (Mac) or `venv\Scripts\activate` (Windows) to activate the virtual environment
 5. Run `pip install -r requirements.txt` to install dependencies
 6. Run the script with `python scripts/fantasy_points.py /path/to/replay/file.dem`
 
