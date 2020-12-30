@@ -19,7 +19,7 @@ from time import sleep
 from helpers.parser import ReplaySummariser, Summary
 
 API_HOST = "https://dota2stats.io"
-API_HOST = "http://localhost:5000"
+
 
 def upload_replay(file: str) -> str:
     """
@@ -69,9 +69,7 @@ if __name__ == "__main__":
     args = docopt(__doc__)
     logging.basicConfig(level=logging.INFO)
 
-    #replay_id = upload_replay(args["REPLAY_FILE"])
-    replay_id = "05e6674e-e1ea-4d27-a10d-0aa470f4caa5"
-    replay_id = "05e6674e-e1ea-4d27-a10d-0aa470f4caa5"
+    replay_id = upload_replay(args["REPLAY_FILE"])
     parsed_replay = fetch_parsed_replay(replay_id)
     summary = ReplaySummariser(parsed_replay)
     fantasy_points = summary.fantasy_points()
