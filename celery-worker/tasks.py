@@ -5,6 +5,7 @@ import json
 from celery import Celery
 from redis import Redis
 from datetime import datetime
+from time import sleep
 
 CELERY_BROKER_URL = "redis://redis:6379"
 CELERY_RESULT_BACKEND = "redis://redis:6379"
@@ -55,5 +56,7 @@ def parse_and_store(replay_file: str) -> None:
     r.lpush("completed", replay_id)
 
     # Delete the replay and parsed replay files
+    # Have to wait a few seconds first for the Docker network to catch up
+    sleep(3)
     subprocess.call("rm %s" % (replay_file))
     subprocess.call("rm %s" % (parsed_replay))
