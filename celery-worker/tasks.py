@@ -58,5 +58,5 @@ def parse_and_store(replay_file: str) -> None:
     # Delete the replay and parsed replay files
     # Have to wait a few seconds first for the Docker network to catch up
     sleep(3)
-    subprocess.call("rm %s" % (replay_file))
-    subprocess.call("rm %s" % (parsed_replay))
+    subprocess.call("rm -f %s" % (replay_file))
+    subprocess.call("rm -f %s" % (parsed_replay))
