@@ -53,3 +53,7 @@ def parse_and_store(replay_file: str) -> None:
 
     # Add the processed ID to the list of completed replays
     r.lpush("completed", replay_id)
+
+    # Delete the replay and parsed replay files
+    subprocess.call("rm %s" % (replay_file))
+    subprocess.call("rm %s" % (parsed_replay))
