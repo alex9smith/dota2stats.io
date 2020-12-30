@@ -247,20 +247,17 @@ class ReplaySummariser:
         self.slot_to_XPM = get_empty_slots()
         self.slot_to_LH = get_empty_slots()
         self.slot_to_deny = get_empty_slots()
+        self.slot_to_networth = get_empty_slots()
         self.slot_to_NWS = {0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: []}
         self.slot_to_XPS = {0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: []}
         self.slot_to_LHS = {0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: []}
         self.slot_to_deny_at_second = {0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: []}
         for slot in self.slot_to_GPM:
+            self.slot_to_networth[slot] = self.interval_data[slot][-1]['gold']
             self.slot_to_GPM[slot] = self.interval_data[slot][-1]['gold'] / (self.duration / 60)
             self.slot_to_XPM[slot] = self.interval_data[slot][-1]['xp'] / (self.duration / 60)
             self.slot_to_LH[slot] = self.interval_data[slot][-1]['lh']
             self.slot_to_deny[slot] = self.interval_data[slot][-1]['denies']
-            for x in range(0, self.duration + 1):
-                self.slot_to_NWS[slot].append(self.interval_data[slot][x]['networth'])
-                self.slot_to_XPS[slot].append(self.interval_data[slot][x]['xp'])
-                self.slot_to_LHS[slot].append(self.interval_data[slot][x]['lh'])
-                self.slot_to_deny_at_second[slot].append(self.interval_data[slot][x]['denies'])
 
     def get_slot_to_hero_id(self) -> None:
         """
@@ -377,7 +374,7 @@ class ReplaySummariser:
 
         # Some parsing stuff here
         self.parse_file()
-        self.analyse_draft()
+        # self.analyse_draft()
         self.get_slot_to_hero_id()
         self.get_player_names()
         self.get_game_duration()
@@ -403,27 +400,7 @@ class ReplaySummariser:
             "radiant_won": (self.epilogue_key['gameInfo_']['dota_']['gameWinner_'] == DIRE),
             "radiant_kills": radiant_kills,
             "dire_kills": dire_kills,
-            "duration": self.duration,  # Time in seconds,
-            "first_blood_time": 120,  # Time in seconds
-            "first_blood_hero": "Hero name",
-            "picks": {
-                "radiant": {
-                    **self.radiant_picks
-                    # etc
-                },
-                "dire": {
-                    **self.dire_picks
-                }
-            },
-            "bans": {
-                "radiant": {
-                    **self.radiant_bans
-                },
-                "dire": {
-                    **self.dire_bans
-                }
-            },
-            "first_pick": self.first_pick
+            "duration": self.duration,  # Time in seconds
         }
 
         # A list of player summaries
@@ -436,15 +413,6 @@ class ReplaySummariser:
                 side = "Dire"
                 victor = not (self.match_summary["radiant_won"])
 
-            gold = {}
-            xp = {}
-            lh = {}
-            deny = {}
-            for x in range(0, self.duration + 1):
-                gold[x] = self.slot_to_NWS[slot]
-                xp[x] = self.slot_to_XPS[slot]
-                lh[x] = self.slot_to_LHS[slot]
-                deny[x] = self.slot_to_deny_at_second[slot]
             my_team_lane_gold = 0
             enemy_team_lane_gold = 0
             team_slots = range(0, 5) if slot < 5 else range(5, 10)
@@ -473,7 +441,7 @@ class ReplaySummariser:
                 "kills": self.slot_to_game_end_stats[slot]["kills"],
                 "deaths": self.slot_to_game_end_stats[slot]["deaths"],
                 "assists": self.slot_to_game_end_stats[slot]["assists"],
-                "net_worth": self.slot_to_NWS[slot][-1],
+                "net_worth": 0,
                 "level": self.slot_to_game_end_stats[slot]["level"],
                 "gpm": self.slot_to_GPM[slot],
                 "xpm": self.slot_to_XPM[slot],
